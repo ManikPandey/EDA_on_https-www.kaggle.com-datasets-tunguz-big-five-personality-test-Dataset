@@ -104,71 +104,6 @@ EXT1 EXT2 EXT3 EXT4 EXT5 ... dateload screenw screenh introelapse testelapse
 
 ###### 3.0 3.0 3.0 3.0 5.0 ... 2016 - 03 - 03 02:02:57 1366.0 768.0 8.0 315.
 
-```
-Note: Only a subset of columns is shown for brevity.
-```
-```
-Dataset Structure
-```
-- **Total records:** 1,015,
-- **Columns:** 110
-- **Data types:** 104 float64, 2 int64, 4 object
-- **Memory usage:** ~852 MB
-**2. Descriptive Statistics**
-
-```
-Below is a summary of key statistics for selected columns (all values are approximate):
-```
-**Column Mean Std Min 25% 50% 75% Max**
-
-###### EXT1 2.65 1.26 0.00 1.00 3.00 4.00 5.
-
-###### EXT2 2.77 1.32 0.00 2.00 3.00 4.00 5.
-
-###### ... ... ... ... ... ... ... ...
-
-OPN10_E 5,336 440,822 - 3.59e6 1,484 2,192 3,362 3.34e
-
-screenw 1,150 560 0 414 1,366 1,440 13,
-
-testelapse 675.4 20,179 1.0 171.0 224.0 313.0 1.19e
-
-endelapse 2,701 1.48e6 1.0 9.0 13.0 18.0 1.49e
-
-###### IPC 10.45 39.83 1.0 1.0 1.0 2.0 725
-
-**3. Missing Values**
-
-
-A summary of missing values in the original dataset:
-
-```
-Column Null Count
-```
-###### EXT1 1,
-
-###### EXT2 1,
-
-###### ... ...
-
-```
-country 77
-```
-```
-endelapse 0
-```
-###### IPC 0
-
-```
-lat_appx_lots_of_err 0
-```
-```
-long_appx_lots_of_err 0
-```
-- Most personality item columns have 1,783 missing values.
-- The country column has 77 missing values.
-- Some metadata columns are complete.
-**4. Data Cleaning and Preprocessing**
 
 **Handling Missing Values**
 
@@ -186,8 +121,6 @@ following items were reverse-scored:
 - **Emotional Stability:** EST2, EST
 - **Agreeableness:** AGR1, AGR3, AGR5, AGR
 - **Conscientiousness:** CSN2, CSN4, CSN6, CSN
-
-
 - **Openness:** OPN2, OPN4, OPN
 
 _Reverse-scoring formula:_
@@ -217,168 +150,15 @@ For each participant, the average score for each Big Five trait was computed:
 - **dateload:** Converted to datetime for time-based analysis, then reduced to only the time
     component for clarity.
 
-### Data visualization:
-
-1. Scatter Plots and Pair Plots
-
-
-2. Customized Pair Plot
-
-
-3. Boxplot: Extraversion by Country
-4. Bar Plot: Average Trait Scores by Country
-5. Heatmap: Correlation Matrix
-
-
 #### Checking Skewness of BIG Five traits
-
-Histograms for Each Trait
-
-By Histogram of each trait we can infer that mostly the graph are near Normally distributed for
-EXT_score , EST_score , CSN_score. Where as AGR_score and OPN_score are little bit neatively
-skewed.
-
-Checking Skewness of Big Five Trait Scores Measuring how much each trait score is skewed using the
-scipy.stats.skew function.
-
-EXT_score: skewness = 0.
-
-EST_score: skewness = -0.
-
-AGR_score: skewness = -0.
-
-CSN_score: skewness = -0.
-
-OPN_score: skewness = -0.
-
-There is not much of skewness in our data so we can work with it easily.
-
-
 #### Searching for outliers
 
-Data info
 
-RangeIndex: 1015341 entries, 0 to 1015340
-
-Data columns (total 9 columns):
-
-# Column Non-Null Count Dtype
-
---- ------ -------------- -----
-
-0 EXT_score 1015341 non-null float
-
-1 EST_score 1015341 non-null float
-
-2 AGR_score 1015341 non-null float
-
-3 CSN_score 1015341 non-null float
-
-4 OPN_score 1015341 non-null float
-
-5 country_code 1015341 non-null int
-
-6 country 1015341 non-null object
-
-7 testelapse 1015341 non-null float
-
-8 total_minutes 1015341 non-null int
-
-dtypes: float64(6), int16(1), int64(1), object(1)
-
-memory usage: 63.9+ MB
-
-Finding max and min values
-
-Max values:
-
-EXT_score 5.
-
-EST_score 5.
-
-AGR_score 5.
-
-CSN_score 5.
-
-OPN_score 5.
-
-testelapse 11892718.
-
-total_minutes 1439.
-
-dtype: float
-
-Min values:
-
-EXT_score 0.
-
-EST_score 0.
-
-AGR_score 0.
-
-CSN_score 0.
-
-
-OPN_score 0.
-
-testelapse 1.
-
-total_minutes 0.
-
-dtype: float
-
-#### Searching for outliers:
-
-from above mean , max and min values of column we can infer that there can be outlier values in
-testelapse as _mean(6.796953)_ , _min(1.0)_ values are close to eachother but the **max value 11892718**.
-
-Inner quartile range and number of counts in inner quartile range -43.5 171.0 224.0 314.0 528.
-
-88666
-
-by this we can say that interqueartile range is not perfect for detecting outliers in our data. As our
-data can be highly skewed
-
-So lets visulize our _df_new['testelapse']_. To see if we can infer anything
-
-1. Boxplot
-
-from the above histogram we can say that data has an scaling issue or the data is highly skewed.
-Either of the way we can apply log transformation for better understanding of the data.
-
-Checking for outliers
-
-1. By comparing the 99th percentile, And Capping the data wiht 1 hour or 3600 seconds vs the
-    original data.
-
-
-percentile_100(max_data) 11892718.
-
-percentile_99 3194.
-count of outliers: 10154
-
-1. total % of outliers from total rows 1.
-
-From this we can say that removing the 1% outliers can be a good choice as **99%** of **testelaspse** _is less
-than 1 hour(or 3600sec)_
 
 Visualizing With and Without Outliers
 
 After removing the data, we can still see there are some outlier on the right side of the graph, So lets
 do the same thing by capping the data to 98percentile
-
-percentile_100(max_data) 11892718.
-
-percentile_99 1506.
-
-count of outliers: 20296
-
-total % of outliers from total rows 1.
-
-
-Checking skewness of above data
-
-testelapse_capped98: skewness = 3.
 
 ### Transformation:
 
@@ -386,19 +166,11 @@ Transformation of Testelapse_capped98 data
 
 Log Transformation
 
-Apply a log transformation to both the original and capped variables to help normalize the
-distribution. By adding a small constant 1 to all values, including zero, you ensure that all values in
-the transformed data are valid for the logarithm function
-
-Still the log transformed data is highly skewed
-
 testelapse_capped98_log: skewness = 3.
 
 ##### Trying Box-Cox Transformation
 
 Skewness after Box-Cox: -0.
-
-
 Lambda used: -0.
 
 visualizing histogram with and wihtout outliers in Testelapse data
@@ -427,25 +199,8 @@ complete the test (testelapse or testelapse_boxcox).
 _Rationale:_ More conscientious individuals may complete the survey more efficiently, resulting in
 shorter completion times
 
-1. Hexbin plot : Average Test Completion Time by Conscientiousness score
-
-
-2. 2D KDE of Conscientiousness vs Test Completion Time
-
-Correlation (log): 0.025, p-value: 0.
-
-Correlation (Box-Cox): 0.034, p-value: 0.
-
-The p-value is not significant, proves that there is no significant relation between testelapse and
-conscientiousness. Thus accepting our null hypothesis.
-
-**H0:** There is no any significant association between Conscientiousness (CSN_score) and the time
-taken to complete the test (testelapse or testelapse_boxcox)
-
 2. Inter-Trait Relationships
-
-
-H5: Extraversion (EXT_score) and Openness (OPN_score) are positively correlated. Rationale: People
+H: Extraversion (EXT_score) and Openness (OPN_score) are positively correlated. Rationale: People
 who are outgoing may also be more open to new experiences.
 
 **H0:** Extraversion (EXT_score) and Openness (OPN_score) are not positively correlated.
@@ -454,20 +209,7 @@ who are outgoing may also be more open to new experiences.
 
 _Rationale:_ People who are outgoing may also be more open to new experiences.
 
-Visualize the Relationship (Scatter Plot)
-
-Pearson correlation: 0.
-
-p-value: 0.
-
-There is a significant positive correlation between Extraversion and Openness.
-
-H1 is accepted
-
-H1: Extraversion (EXT_score) and Openness (OPN_score) are positively correlated.
-
 3. Group Differences
-
 
 Participants with high Agreeableness (AGR_score) tend to have lower test completion times
 compared to those with low Agreeableness. Rationale: Agreeable individuals may be more
@@ -483,57 +225,14 @@ Agreeableness
 
 _Relation:_ Agreeable individuals may be more cooperative and focused during surveys.
 
-1. Visualize the Relationship
-2. Boxplot by Agreeableness group
-
-
-Statistical Test:
-
-Pearson correlation: 0.
-
-p-value: 0.
-
-Interpretation:
-
-A negative and significant correlation (p < 0.05) supports the alternative hypothesis. If the correlation
-is not significant, there is no evidence of a relationship.
-
-Results: Pearson correlation: 0.041 p-value: 0.0000 Result:
-
-While the relationship is statistically significant, it is in the opposite direction of the hypothesis
-(higher Agreeableness is linked to slightly longer completion times), and the effect is so small as to be
-practically insignificant. Thus, there is no meaningful evidence that more agreeable individuals
-complete the survey more quickly.
-
-Thus, Null Hypothesis is accepted. (H0): There is no relationship between Agreeableness and test
-completion time.
-
 ## Summary
 
 **Big Five Personality Traits Dataset: EDA Summary & Analysis**
 
 **1. Data Summary**
-
 **Dataset Overview:**
-
-- **Source:** Kaggle, Big Five Personality Test (2016–2018)
-- **Size:** 1,015,342 records, 110 columns
-- **Variables:**
-    - **Personality Trait Responses:** 50 items (e.g., EXT1, AGR1, etc.), each rated 1– 5
-    - **Response Times:** 50 variables (e.g., EXT1_E), time in milliseconds
-    - **User Metadata:** Includes timestamp (dateload), screen dimensions, intro/finalization
-       timing, IP-based counts, country, and approximate latitude/longitude
-- **Possible Target Variables:**
-    - Calculated trait scores (Openness, Conscientiousness, Extraversion, Agreeableness,
-       Neuroticism)
-    - Test completion time (testelapse)
-    - Country/region for demographic analysis
-    - Response consistency or speed
 **2. Data Exploration Plan**
-
 **Vision for Analysis:**
-
-
 - **Understand trait distributions:** Assess the overall and country-wise distributions of Big Five
     scores.
 - **Behavioral patterns:** Analyze response times and completion behaviors.
@@ -541,51 +240,25 @@ completion time.
 - **Trait interrelations:** Investigate correlations between personality traits.
 - **Outlier and anomaly detection:** Identify and address extreme values in responses and
     timings.
-
 **Steps:**
-
 1. Generate descriptive statistics for all variables.
 2. Visualize trait distributions and relationships (histograms, scatter plots, pair plots).
 3. Examine response time data for skewness and outliers.
 4. Explore demographic patterns using country-level aggregations.
 5. Formulate and test hypotheses about trait relationships and behavioral outcomes.
 **3. Exploratory Data Analysis (EDA) Results**
-
+   
 **Trait Distributions:**
-
 - Most trait scores (Extraversion, Emotional Stability, Conscientiousness) are nearly normally
     distributed.
 - Agreeableness and Openness show slight negative skewness.
 
-**Summary Statistics Example:**
-
-```
-Trait Mean Std Min 25% 50% 75% Max
-```
-###### EXT1 2.65 1.26 0.0 1.0 3.0 4.0 5.
-
-###### EXT2 2.77 1.32 0.0 2.0 3.0 4.0 5.
-
-```
-testelapse 675 20179 1.0 171 224 313 1.19e
-```
-**Visualizations:**
-
-- **Scatter and pair plots:** Reveal relationships between traits, both overall and by country.
-- **Boxplots:** Show trait score distributions by country and outlier presence in test completion
-    times.
-- **Histograms:** Confirm near-normal trait distributions; highlight skewness in timing data.
-- **Heatmaps:** Display trait correlation matrices.
-
 **Outlier Detection & Response Time:**
-
-
 - Extreme outliers in testelapse (max: 11,892,718 sec) suggest data entry or behavioral
     anomalies.
 - Capping at the 98th/99th percentile and applying Box-Cox transformation normalizes timing
     data.
 **4. Data Cleaning & Feature Engineering**
-
 **Missing Values:**
 
 - Personality items: 1,783 missing per column.
