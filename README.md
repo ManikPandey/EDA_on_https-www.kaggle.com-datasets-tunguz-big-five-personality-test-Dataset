@@ -79,152 +79,6 @@ Depending on the project focus, potential target variables include:
 This dataset is well-suited for exploring relationships between personality traits, response behavior,
 and demographic factors.
 
-**1. Dataset Summary**
-
-The dataset contains responses to the Big Five personality test, collected through an online survey.
-Each row represents one participant’s answers to 50 personality items and associated metadata. The
-dataset is large, with over 1 million entries and 110 columns.
-
-**Sample of the First 5 Records**
-
-```
-EXT1 EXT2 EXT3 EXT4 EXT5 ... dateload screenw screenh introelapse testelapse
-```
-###### 4.0 1.0 5.0 2.0 5.0 ... 2016 - 03 - 03 02:01:01 768.0 1024.0 9.0 234.
-
-
-```
-EXT1 EXT2 EXT3 EXT4 EXT5 ... dateload screenw screenh introelapse testelapse
-```
-###### 3.0 5.0 3.0 4.0 3.0 ... 2016 - 03 - 03 02:01:20 1360.0 768.0 12.0 179.
-
-###### 2.0 3.0 4.0 4.0 3.0 ... 2016 - 03 - 03 02:01:56 1366.0 768.0 3.0 186.
-
-###### 2.0 2.0 2.0 3.0 4.0 ... 2016 - 03 - 03 02:02:02 1920.0 1200.0 186.0 219.
-
-###### 3.0 3.0 3.0 3.0 5.0 ... 2016 - 03 - 03 02:02:57 1366.0 768.0 8.0 315.
-
-
-**Handling Missing Values**
-
-- **Row deletion:** Removing all rows with any null values reduced the dataset from 1,015,340 to
-    695,703 records. This approach ensures data completeness but results in data loss.
-- **Forward fill:** Alternatively, missing values were filled using the last observed non-null value
-    (fillna(method='ffill')). This can introduce bias or inaccuracies but preserves more data.
-
-**Reverse Scoring**
-
-Some items are negatively worded and require reverse scoring for accurate trait computation. The
-following items were reverse-scored:
-
-- **Extraversion:** EXT2, EXT4, EXT6, EXT8, EXT
-- **Emotional Stability:** EST2, EST
-- **Agreeableness:** AGR1, AGR3, AGR5, AGR
-- **Conscientiousness:** CSN2, CSN4, CSN6, CSN
-- **Openness:** OPN2, OPN4, OPN
-
-_Reverse-scoring formula:_
-new_value = 6 - original_value
-
-**Dropping Less Useful Columns**
-
-Columns like screenh, screenw, lat_appx_lots_of_err, and long_appx_lots_of_err were dropped to
-focus on core survey and personality data.
-
-**Aggregating Big Five Traits**
-
-For each participant, the average score for each Big Five trait was computed:
-
-- **EXT_score:** Mean of EXT1–EXT
-- **EST_score:** Mean of EST1–EST
-- **AGR_score:** Mean of AGR1–AGR
-- **CSN_score:** Mean of CSN1–CSN
-- **OPN_score:** Mean of OPN1–OPN
-
-**Encoding Categorical Variables**
-
-- **Country:** Encoded as country_code for easier analysis and modeling.
-
-**Date and Time Formatting**
-
-- **dateload:** Converted to datetime for time-based analysis, then reduced to only the time
-    component for clarity.
-
-#### Checking Skewness of BIG Five traits
-#### Searching for outliers
-
-
-
-Visualizing With and Without Outliers
-
-After removing the data, we can still see there are some outlier on the right side of the graph, So lets
-do the same thing by capping the data to 98percentile
-
-### Transformation:
-
-Transformation of Testelapse_capped98 data
-
-Log Transformation
-
-testelapse_capped98_log: skewness = 3.
-
-##### Trying Box-Cox Transformation
-
-Skewness after Box-Cox: -0.
-Lambda used: -0.
-
-visualizing histogram with and wihtout outliers in Testelapse data
-
-Original data vs capped 98 vs Box cox transformed data
-
-
-### Visualizing Big Five Traits and Testelapse (Box-Cox Transformed)
-
-1. Histograms for Big Five Traits and Testelapse_Boxcox
-
-### Hypotheses Testing
-
-1. Personality Traits and Test Completion Time
-
-There is a significant association between Conscientiousness (CSN_score) and the time taken to
-complete the test (testelapse_log or testelapse_capped98_log). Rationale: More conscientious
-individuals may complete the survey more efficiently, resulting in shorter completion times
-
-**H0:** There is no any significant association between Conscientiousness (CSN_score) and the time
-taken to complete the test (testelapse or testelapse_boxcox)
-
-**H1:** There is a significant association between Conscientiousness (CSN_score) and the time taken to
-complete the test (testelapse or testelapse_boxcox).
-
-_Rationale:_ More conscientious individuals may complete the survey more efficiently, resulting in
-shorter completion times
-
-2. Inter-Trait Relationships
-H: Extraversion (EXT_score) and Openness (OPN_score) are positively correlated. Rationale: People
-who are outgoing may also be more open to new experiences.
-
-**H0:** Extraversion (EXT_score) and Openness (OPN_score) are not positively correlated.
-
-**H1:** Extraversion (EXT_score) and Openness (OPN_score) are positively correlated.
-
-_Rationale:_ People who are outgoing may also be more open to new experiences.
-
-3. Group Differences
-
-Participants with high Agreeableness (AGR_score) tend to have lower test completion times
-compared to those with low Agreeableness. Rationale: Agreeable individuals may be more
-cooperative and focused during surveys.
-
-**H0:** There is a no realtion between test completion time and Agreeableness. Participants with high
-Agreeableness (AGR_score) don't have any signigicant affect on completion times compared to those
-with low Agreeableness.
-
-**H1:** Participants with high Agreeableness (AGR_score) tend to have lower test completion times
-compared to those with low Agreeableness. i.e there is a realtion betwen test completion time and
-Agreeableness
-
-_Relation:_ Agreeable individuals may be more cooperative and focused during surveys.
-
 ## Summary
 
 **Big Five Personality Traits Dataset: EDA Summary & Analysis**
@@ -311,23 +165,49 @@ completion.
 **7. Significance Test Discussion**
 
 **Hypothesis Tested:**
-_Conscientiousness is associated with shorter test completion time._
+### Hypotheses Testing
 
-- **Null Hypothesis (H0):** No significant association between CSN_score and test completion
-    time.
-- **Alternative (H1):** Higher CSN_score correlates with shorter completion time.
+1. Personality Traits and Test Completion Time
 
-**Results:**
+There is a significant association between Conscientiousness (CSN_score) and the time taken to
+complete the test (testelapse_log or testelapse_capped98_log). Rationale: More conscientious
+individuals may complete the survey more efficiently, resulting in shorter completion times
 
-- Correlation (log-transformed): 0.025, p-value < 0.001
-- Correlation (Box-Cox transformed): 0.034, p-value < 0.001
+**H0:** There is no any significant association between Conscientiousness (CSN_score) and the time
+taken to complete the test (testelapse or testelapse_boxcox)
 
-**Interpretation:**
+**H1:** There is a significant association between Conscientiousness (CSN_score) and the time taken to
+complete the test (testelapse or testelapse_boxcox).
 
-- The correlation is statistically significant but extremely small, indicating no practical
-    relationship.
-- The null hypothesis is accepted: Conscientiousness does not meaningfully predict test
-    completion speed.
+_Rationale:_ More conscientious individuals may complete the survey more efficiently, resulting in
+shorter completion times
+
+2. Inter-Trait Relationships
+H: Extraversion (EXT_score) and Openness (OPN_score) are positively correlated. Rationale: People
+who are outgoing may also be more open to new experiences.
+
+**H0:** Extraversion (EXT_score) and Openness (OPN_score) are not positively correlated.
+
+**H1:** Extraversion (EXT_score) and Openness (OPN_score) are positively correlated.
+
+_Rationale:_ People who are outgoing may also be more open to new experiences.
+
+3. Group Differences
+
+Participants with high Agreeableness (AGR_score) tend to have lower test completion times
+compared to those with low Agreeableness. Rationale: Agreeable individuals may be more
+cooperative and focused during surveys.
+
+**H0:** There is a no realtion between test completion time and Agreeableness. Participants with high
+Agreeableness (AGR_score) don't have any signigicant affect on completion times compared to those
+with low Agreeableness.
+
+**H1:** Participants with high Agreeableness (AGR_score) tend to have lower test completion times
+compared to those with low Agreeableness. i.e there is a realtion betwen test completion time and
+Agreeableness
+
+_Relation:_ Agreeable individuals may be more cooperative and focused during surveys.
+
 **8. Conclusion & Next Steps**
 
 **Key Takeaways:**
